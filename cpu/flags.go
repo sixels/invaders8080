@@ -1,6 +1,6 @@
 package cpu
 
-import "github.com/vnteles/i8080/bits"
+import "github.com/protoshark/invaders8080/bits"
 
 // Flags
 const (

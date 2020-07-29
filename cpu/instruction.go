@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/vnteles/i8080/bits"
+	"github.com/protoshark/invaders8080/bits"
 )
 
 func unimplemented(cpu *CPU) {

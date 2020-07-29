@@ -3,7 +3,7 @@ package cpu
 import (
 	"fmt"
 
-	"github.com/vnteles/i8080/bits"
+	"github.com/protoshark/invaders8080/bits"
 )
 
 // Instruction data -> the name and the number of cycles each instruction run

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/veandco/go-sdl2/sdl"
-	"github.com/vnteles/i8080/cpu"
+	"github.com/protoshark/invaders8080/cpu"
 )
 
 // Invaders game struct

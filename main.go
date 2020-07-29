@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/vnteles/i8080/cpu"
-	"github.com/vnteles/i8080/invaders"
+	"github.com/protoshark/invaders8080/cpu"
+	"github.com/protoshark/invaders8080/invaders"
 )
 
 func loadFileIntoCPUMemory(cpu *cpu.CPU, path string, offset uint16) {
