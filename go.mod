@@ -1,4 +1,4 @@
-module github.com/vnteles/i8080
+module github.com/protoshark/invaders8080
 
 go 1.14
 
