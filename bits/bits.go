@@ -8,7 +8,7 @@ func (b Bitfield) Get(field Bitfield) bool {
 	return b&field != 0
 }
 
-// GetValue of field, since go doensn't conver bool to int
+// GetValue of field, since go doesn't convert bool to int
 func (b Bitfield) GetValue(field Bitfield) uint8 {
 	if b&field != 0 {
 		return 1

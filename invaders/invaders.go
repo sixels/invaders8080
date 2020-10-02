@@ -62,7 +62,7 @@ func (game *Invaders) loadInvaders() {
 		file := sdl.RWFromFile(path, "rb")
 		defer file.Close()
 
-		fmt.Printf("Loading %s %s 0x%04x\n", path, "into offset", offset)
+		fmt.Printf("Loading %s into offset 0x%04x\n", path, offset)
 
 		file.Read(game.cpu.Memory[offset:])
 	}
