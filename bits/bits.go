@@ -5,12 +5,12 @@ type Bitfield uint8
 
 // Get the field
 func (b Bitfield) Get(field Bitfield) bool {
-	return b&field != 0
+	return b&field == field
 }
 
 // GetValue of field, since go doesn't convert bool to int
 func (b Bitfield) GetValue(field Bitfield) uint8 {
-	if b&field != 0 {
+	if b.Get(field) {
 		return 1
 	}
 	return 0
@@ -21,7 +21,7 @@ func (b *Bitfield) Set(field Bitfield, value bool) {
 	if value {
 		*b |= field
 	} else {
-		*b &= ^field
+		*b &= Bitfield(^uint8(field))
 	}
 }
 
@@ -41,5 +41,6 @@ func ByteParity(x uint8) bool {
 		}
 		x = x >> 1
 	}
-	return (0 == (p & 0x1))
+
+	return ((p & 0x1) == 0)
 }

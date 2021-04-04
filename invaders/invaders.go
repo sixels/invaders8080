@@ -3,8 +3,8 @@ package invaders
 import (
 	"fmt"
 
-	"github.com/veandco/go-sdl2/sdl"
 	"github.com/protoshark/invaders8080/cpu"
+	"github.com/veandco/go-sdl2/sdl"
 )
 
 // Invaders game struct
@@ -14,21 +14,13 @@ type Invaders struct {
 	texture     *sdl.Texture
 	frameBuffer []uint8
 
-	port1 uint8
-	port2 uint8
+	ports [9]uint8
 
-	shift0      uint8
-	shift1      uint8
-	shiftOffset uint8
+	shiftOffset   uint8
+	shiftRegister uint16
 }
 
-// InvadersRoms path and memory offset
-var InvadersRoms = map[uint16]string{
-	0x0000: "./test/invaders.h",
-	0x0800: "./test/invaders.g",
-	0x1000: "./test/invaders.f",
-	0x1800: "./test/invaders.e",
-}
+const InitialROMOffset uint32 = 0x0000
 
 // Screen dimensions
 const (
@@ -50,27 +42,24 @@ func New() Invaders {
 	}
 	game.frameBuffer = make([]uint8, ScreenWidth*ScreenHeight*4)
 
-	game.port1 = 1 << 3
-	game.port2 = 0
+	// game.ports[1] = 1 << 3
 
 	return game
 }
 
 // Load space invaders into cpu memory
-func (game *Invaders) loadInvaders() {
-	for offset, path := range InvadersRoms {
-		file := sdl.RWFromFile(path, "rb")
-		defer file.Close()
+func (game *Invaders) loadROM(romPath string) {
+	file := sdl.RWFromFile(romPath, "rb")
+	defer file.Close()
 
-		fmt.Printf("Loading %s into offset 0x%04x\n", path, offset)
+	fmt.Printf("Loading %s\n", romPath)
 
-		file.Read(game.cpu.Memory[offset:])
-	}
+	file.Read(game.cpu.Memory[InitialROMOffset:])
 }
 
 // Run space invaders
-func (game *Invaders) Run() {
-	game.setup()
+func (game *Invaders) Run(romPath string) {
+	game.setup(romPath)
 	defer sdl.Quit()
 	defer game.renderer.Destroy()
 	defer game.texture.Destroy()
@@ -88,31 +77,31 @@ func (game *Invaders) Run() {
 				game.cpu.Interrupt(0x08)
 			}
 			game.update()
+			running = game.handleEvents()
+			game.draw()
+
 			if game.cpu.IntEnable {
 				game.cpu.Interrupt(0x10)
 			}
 
-			game.draw()
-
-			running = game.handleEvents()
 			timer = sdl.GetTicks()
 		}
 	}
 }
 
-func (game *Invaders) setup() {
+func (game *Invaders) setup(romPath string) {
 	if err := sdl.Init(sdl.INIT_VIDEO); err != nil {
 		panic(err)
 	}
-	// defer sdl.Quit()
 
 	// create the window
 	window, err := sdl.CreateWindow("Space Invaders", sdl.WINDOWPOS_CENTERED, sdl.WINDOWPOS_CENTERED,
 		ScreenWidth*2, ScreenHeight*2, sdl.WINDOW_RESIZABLE)
+
 	if err != nil {
+		sdl.Quit()
 		panic(err)
 	}
-	// defer window.Destroy()
 
 	// set minimum size
 	window.SetMinimumSize(ScreenWidth, ScreenHeight)
@@ -122,23 +111,29 @@ func (game *Invaders) setup() {
 
 	game.renderer, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
 	if err != nil {
+		window.Destroy()
+		sdl.Quit()
 		panic(err)
 	}
-	// defer game.renderer.Destroy()
 
-	err = game.renderer.SetLogicalSize(ScreenWidth, ScreenHeight)
-	if err != nil {
+	if game.renderer.SetLogicalSize(ScreenWidth, ScreenHeight) != nil {
+		game.renderer.Destroy()
+		window.Destroy()
+		sdl.Quit()
 		panic(err)
 	}
 
 	game.texture, err = game.renderer.CreateTexture(sdl.PIXELFORMAT_RGB888, sdl.TEXTUREACCESS_STREAMING, ScreenWidth, ScreenHeight)
+
 	if err != nil {
+		game.renderer.Destroy()
+		window.Destroy()
+		sdl.Quit()
 		panic(err)
 	}
-	// defer game.texture.Destroy()
 
 	game.updateScreen()
-	game.loadInvaders()
+	game.loadROM(romPath)
 }
 
 func (game *Invaders) updateScreen() {
@@ -151,43 +146,72 @@ func (game *Invaders) updateScreen() {
 func (game *Invaders) handleEvents() bool {
 	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 		switch e := event.(type) {
+
 		case *sdl.QuitEvent:
 			return false
+
 		case *sdl.KeyboardEvent:
 			key := e.Keysym.Scancode
 			if e.Type == sdl.KEYDOWN {
 				switch key {
+
 				case sdl.SCANCODE_ESCAPE:
 					return false
-				case sdl.SCANCODE_C:
+				case sdl.SCANCODE_C: // INSERT COIN
 					fmt.Print(".")
-					game.port1 |= 1 << 0
-				case sdl.SCANCODE_RETURN:
+					game.ports[1] |= 0x01
+
+				case sdl.SCANCODE_S: // P1 START
 					fmt.Print(",")
-					game.port1 |= 1 << 2
-				case sdl.SCANCODE_SPACE:
+					game.ports[1] |= 1 << 2
+				case sdl.SCANCODE_RETURN: // P2 START
+					fmt.Print("2,")
+					game.ports[1] |= 1 << 1
+
+				case sdl.SCANCODE_W: // P1 SHOOT
 					fmt.Print("^")
-					game.port1 |= 1 << 4
-				case sdl.SCANCODE_LEFT:
+					game.ports[1] |= 1 << 4
+				case sdl.SCANCODE_A: // P1 LEFT
 					fmt.Print("<")
-					game.port1 |= 1 << 5
-				case sdl.SCANCODE_RIGHT:
+					game.ports[1] |= 1 << 5
+				case sdl.SCANCODE_D: // P1 RIGHT
 					fmt.Print(">")
-					game.port1 |= 1 << 6
+					game.ports[1] |= 1 << 6
+
+				case sdl.SCANCODE_UP: // P2 SHOOT
+					fmt.Print("2^")
+					game.ports[2] |= 1 << 4
+				case sdl.SCANCODE_LEFT: // P2 LEFT
+					fmt.Print("2<")
+					game.ports[2] |= 1 << 5
+				case sdl.SCANCODE_RIGHT: // P2 RIGHT
+					fmt.Print("2>")
+					game.ports[2] |= 1 << 6
 				}
 			}
 			if e.Type == sdl.KEYUP {
 				switch key {
 				case sdl.SCANCODE_C:
-					game.port1 &= ^uint8(1 << 0)
+					game.ports[1] &= ^uint8(1 << 0)
+
+				case sdl.SCANCODE_S:
+					game.ports[1] &= ^uint8(1 << 2)
 				case sdl.SCANCODE_RETURN:
-					game.port1 &= ^uint8(1 << 2)
-				case sdl.SCANCODE_SPACE:
-					game.port1 &= ^uint8(1 << 4)
+					game.ports[1] &= ^uint8(1 << 1)
+
+				case sdl.SCANCODE_W:
+					game.ports[1] &= ^uint8(1 << 4)
+				case sdl.SCANCODE_A:
+					game.ports[1] &= ^uint8(1 << 5)
+				case sdl.SCANCODE_D:
+					game.ports[1] &= ^uint8(1 << 6)
+
+				case sdl.SCANCODE_UP:
+					game.ports[2] &= ^uint8(1 << 4)
 				case sdl.SCANCODE_LEFT:
-					game.port1 &= ^uint8(1 << 5)
+					game.ports[2] &= ^uint8(1 << 5)
 				case sdl.SCANCODE_RIGHT:
-					game.port1 &= ^uint8(1 << 6)
+					game.ports[2] &= ^uint8(1 << 6)
 				}
 			}
 		}
@@ -196,44 +220,53 @@ func (game *Invaders) handleEvents() bool {
 	return true
 }
 
-func (game *Invaders) handleInOut(opcode uint8) {
-	switch opcode {
-	case 0xdb: // IN
-		port := game.cpu.NextByte()
-		game.cpu.PC++
-
-		result := &game.cpu.A
-
-		switch port {
-		case 1:
-			*result = game.port1
-		case 2:
-			*result = game.port2
-		case 3:
-			value := (uint16(game.shift1) << 8) | uint16(game.shift0)
-			*result = uint8(value >> (8 - game.shiftOffset))
-		}
-
-	case 0xd3: // OUT
-		port := game.cpu.NextByte()
-		game.cpu.PC++
-
-		switch port {
-		case 2:
-			game.shiftOffset = game.cpu.A
-		case 4:
-			game.shift0 = game.shift1
-			game.shift1 = game.cpu.A
-		}
+func (game *Invaders) handleIn(port uint8) {
+	if port == 2 || port == 4 {
+		return
 	}
+	fmt.Printf("IN %d\n", port)
+
+	game.ports[port] = game.cpu.A
+}
+
+func (game *Invaders) handleOut(port uint8) {
+	if port == 3 {
+		return
+	}
+	fmt.Printf("OUT %d\n", port)
+
+	game.cpu.A = game.ports[port]
 }
 
 func (game *Invaders) update() {
 	game.cpu.Cycles = 0
 	for game.cpu.Cycles < uint32(CyclesPerFrames/2) {
 		opcode := game.cpu.NextByte()
+
+		// emulate shift register
+		if opcode == 0xd3 {
+			nextByte := game.cpu.NextByte()
+			if nextByte == 2 {
+				game.shiftOffset = game.cpu.A
+			} else if nextByte == 4 {
+				game.shiftRegister = (uint16(game.cpu.A) << 8) | (uint16(game.shiftRegister) >> 8)
+			}
+		} else if opcode == 0xdb {
+			if game.cpu.NextByte() == 3 {
+				game.cpu.A = uint8(game.shiftRegister >> (8 - game.shiftOffset))
+			}
+		}
+
 		game.cpu.Step(false)
-		game.handleInOut(opcode)
+
+		if opcode == 0xd3 {
+			game.handleIn(game.cpu.NextByte())
+			game.cpu.PC++
+		}
+		if opcode == 0xdb {
+			game.handleOut(game.cpu.NextByte())
+			game.cpu.PC++
+		}
 	}
 }
 

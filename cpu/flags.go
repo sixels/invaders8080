@@ -1,7 +1,5 @@
 package cpu
 
-import "github.com/protoshark/invaders8080/bits"
-
 // Flags
 const (
 	Z = 1 << iota
@@ -12,14 +10,14 @@ const (
 )
 
 // SetZSP flags based on result
-func (cpu *CPU) SetZSP(result uint8) {
+func (cpu *CPU) SetZSP(result uint8, size uint8) {
 	// Zero flag
 	cpu.Flags.Set(Z, result == 0)
 
 	// Sign flag
-	cpu.Flags.Set(S, (result&0x80) == 0x80)
+	cpu.Flags.Set(S, (result&(1<<(size-1)))>>(size-1) == 1)
 
 	// Parity flag
-	parity := bits.ByteParity(result)
-	cpu.Flags.Set(P, parity)
+	// parity := bits.ByteParity(result)
+	cpu.Flags.Set(P, (result&1) == 0)
 }

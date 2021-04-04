@@ -16,13 +16,13 @@ type Instruction struct {
 // InstructionTable for disassembling
 var InstructionTable = []Instruction{
 	/*0x00*/ {"NOP", 0x04, 1}, {"LXI B,$", 0x0a, 3}, {"STAX B", 0x07, 1}, {"INX B", 0x05, 1}, {"INR B", 0x05, 1}, {"DCR B", 0x05, 1}, {"MVI B,#$", 0x07, 2}, {"RLC", 0x04, 1},
-	/*0x08*/ {"UNK", 0x04, 1}, {"DAD B", 0x0a, 1}, {"LDAX B", 0x07, 1}, {"DCX B", 0x05, 1}, {"INR C", 0x05, 1}, {"DCR C", 0x05, 1}, {"MVI C,#$", 0x07, 2}, {"RRC", 0x04, 1},
-	/*0x10*/ {"UNK", 0x04, 1}, {"LXI D,$", 0x0a, 3}, {"STAX D", 0x07, 1}, {"INX D", 0x05, 1}, {"INR D", 0x05, 1}, {"DCR D", 0x05, 1}, {"MVI D,#$", 0x07, 2}, {"RAL", 0x04, 1},
-	/*0x18*/ {"UNK", 0x04, 1}, {"DAD D", 0x0a, 1}, {"LDAX D", 0x07, 1}, {"DCX D", 0x05, 1}, {"INR E", 0x05, 1}, {"DCR E", 0x05, 1}, {"MVI E,#$", 0x07, 2}, {"RAR", 0x04, 1},
-	/*0x20*/ {"UNK", 0x04, 1}, {"LXI H,$", 0x0a, 3}, {"SHLD", 0x10, 1}, {"INX H", 0x05, 1}, {"INR H", 0x05, 1}, {"DCR H", 0x05, 1}, {"MVI H,#$", 0x07, 2}, {"DAA", 0x04, 1},
-	/*0x28*/ {"UNK", 0x04, 1}, {"DAD H", 0x0a, 1}, {"LHLD $", 0x10, 3}, {"DCX H", 0x05, 1}, {"INR L", 0x05, 1}, {"DCR L", 0x05, 1}, {"MVI L,#$", 0x07, 2}, {"CMA", 0x04, 1},
-	/*0x30*/ {"UNK", 0x04, 1}, {"LXI SP,$", 0x0a, 3}, {"STA $", 0x0d, 3}, {"INX SP", 0x05, 1}, {"INR M", 0x0a, 1}, {"DCR M", 0x0a, 1}, {"MVI M,#$", 0x0a, 2}, {"STC", 0x04, 1},
-	/*0x38*/ {"UNK", 0x04, 1}, {"DAD SP", 0x0a, 1}, {"LDA $", 0x0d, 3}, {"DCX SP", 0x05, 1}, {"INR A", 0x05, 1}, {"DCR A", 0x05, 1}, {"MVI A,#$", 0x07, 2}, {"CMC", 0x04, 1},
+	/*0x08*/ {"NOP", 0x04, 1}, {"DAD B", 0x0a, 1}, {"LDAX B", 0x07, 1}, {"DCX B", 0x05, 1}, {"INR C", 0x05, 1}, {"DCR C", 0x05, 1}, {"MVI C,#$", 0x07, 2}, {"RRC", 0x04, 1},
+	/*0x10*/ {"NOP", 0x04, 1}, {"LXI D,$", 0x0a, 3}, {"STAX D", 0x07, 1}, {"INX D", 0x05, 1}, {"INR D", 0x05, 1}, {"DCR D", 0x05, 1}, {"MVI D,#$", 0x07, 2}, {"RAL", 0x04, 1},
+	/*0x18*/ {"NOP", 0x04, 1}, {"DAD D", 0x0a, 1}, {"LDAX D", 0x07, 1}, {"DCX D", 0x05, 1}, {"INR E", 0x05, 1}, {"DCR E", 0x05, 1}, {"MVI E,#$", 0x07, 2}, {"RAR", 0x04, 1},
+	/*0x20*/ {"NOP", 0x04, 1}, {"LXI H,$", 0x0a, 3}, {"SHLD", 0x10, 1}, {"INX H", 0x05, 1}, {"INR H", 0x05, 1}, {"DCR H", 0x05, 1}, {"MVI H,#$", 0x07, 2}, {"DAA", 0x04, 1},
+	/*0x28*/ {"NOP", 0x04, 1}, {"DAD H", 0x0a, 1}, {"LHLD $", 0x10, 3}, {"DCX H", 0x05, 1}, {"INR L", 0x05, 1}, {"DCR L", 0x05, 1}, {"MVI L,#$", 0x07, 2}, {"CMA", 0x04, 1},
+	/*0x30*/ {"NOP", 0x04, 1}, {"LXI SP,$", 0x0a, 3}, {"STA $", 0x0d, 3}, {"INX SP", 0x05, 1}, {"INR M", 0x0a, 1}, {"DCR M", 0x0a, 1}, {"MVI M,#$", 0x0a, 2}, {"STC", 0x04, 1},
+	/*0x38*/ {"NOP", 0x04, 1}, {"DAD SP", 0x0a, 1}, {"LDA $", 0x0d, 3}, {"DCX SP", 0x05, 1}, {"INR A", 0x05, 1}, {"DCR A", 0x05, 1}, {"MVI A,#$", 0x07, 2}, {"CMC", 0x04, 1},
 
 	/*0x40*/ {"MOV B,B", 0x05, 1}, {"MOV B,C", 0x05, 1}, {"MOV B,D", 0x05, 1}, {"MOV B,E", 0x05, 1}, {"MOV B,H", 0x05, 1}, {"MOV B,L", 0x05, 1}, {"MOV B,M", 0x07, 1}, {"MOV B,A", 0x05, 1},
 	/*0x48*/ {"MOV C,B", 0x05, 1}, {"MOV C,C", 0x05, 1}, {"MOV C,D", 0x05, 1}, {"MOV C,E", 0x05, 1}, {"MOV C,H", 0x05, 1}, {"MOV C,L", 0x05, 1}, {"MOV C,M", 0x07, 1}, {"MOV C,A", 0x05, 1},
@@ -124,9 +124,9 @@ func (cpu *CPU) MemWrite(offset uint16, value uint8) {
 		fmt.Println(offset)
 		panic("Attempt to write ROM Memory")
 	}
-	if offset >= 0x4000 {
-		panic("Attempt to write over the RAM limit")
-	}
+	// if offset >= 0x4000 {
+	//	// panic("Attempt to write over the RAM limit")
+	// }
 	cpu.Memory[offset] = value
 }
 
@@ -149,7 +149,7 @@ func (cpu *CPU) NextByte() uint8 {
 func (cpu *CPU) pushStack(value uint16) {
 	sp := cpu.SP
 	cpu.MemWrite(sp-1, uint8(value>>8))
-	cpu.MemWrite(sp-2, uint8(value))
+	cpu.MemWrite(sp-2, uint8(value&0xff))
 	cpu.SP -= 2
 }
 
@@ -209,9 +209,9 @@ func (cpu *CPU) debug(instructionOffset uint16) {
 }
 
 // Interrupt the cpu execution
-func (cpu *CPU) Interrupt(address uint8) {
+func (cpu *CPU) Interrupt(address uint16) {
 	cpu.pushStack(cpu.PC)
-	cpu.PC = uint16(address)
+	cpu.PC = address
 	cpu.IntEnable = false
 }
 
@@ -223,7 +223,7 @@ func (cpu *CPU) runInstruction(offset uint16) {
 	cpu.Cycles += uint32(InstructionTable[opcode].Cycles)
 
 	switch opcode {
-	case 0x00: // NOP
+	case 0x00, 0x10, 0x20, 0x30, 0x08, 0x18, 0x28, 0x38: // NOP
 		break
 	case 0x01: // LXI B,word
 		lxi(cpu, &cpu.B, &cpu.C, cpu.NextWord())
@@ -241,7 +241,7 @@ func (cpu *CPU) runInstruction(offset uint16) {
 		rlc(cpu)
 
 	// case 0x08: // -
-	// 	break
+	// break
 	case 0x09: // DAD B
 		dad(cpu, cpu.B, cpu.C)
 	case 0x0a: // LDAX B
@@ -271,8 +271,8 @@ func (cpu *CPU) runInstruction(offset uint16) {
 		dcr(cpu, &cpu.D)
 	case 0x16: // MVI D,byte
 		mvi(cpu, &cpu.D, cpu.NextByte())
-	case 0x17: //RAL
-		ral(cpu)
+	// case 0x17: //RAL
+	// 	ral(cpu)
 
 	// case 0x18: // -
 	// 	break
@@ -305,6 +305,8 @@ func (cpu *CPU) runInstruction(offset uint16) {
 		dcr(cpu, &cpu.H)
 	case 0x26: // MVI H,byte
 		mvi(cpu, &cpu.H, cpu.NextByte())
+	case 0x27:
+		break
 
 	// case 0x28: // -
 	// 	break
@@ -544,23 +546,6 @@ func (cpu *CPU) runInstruction(offset uint16) {
 	case 0x97: // SUB A
 		sub(cpu, cpu.A)
 
-	case 0x98: // SBB B
-		sbb(cpu, cpu.B)
-	case 0x99: // SBB C
-		sbb(cpu, cpu.C)
-	case 0x9a: // SBB D
-		sbb(cpu, cpu.D)
-	case 0x9b: // SBB E
-		sbb(cpu, cpu.E)
-	case 0x9c: // SBB H
-		sbb(cpu, cpu.H)
-	case 0x9d: // SBB L
-		sbb(cpu, cpu.L)
-	case 0x9e: // SBB M
-		sbb(cpu, cpu.MemRead(cpu.hlValue()))
-	case 0x9f: // SBB A
-		sbb(cpu, cpu.A)
-
 	case 0xa0: // ANA B
 		ana(cpu, cpu.B)
 	case 0xa1: // ANA C
@@ -575,6 +560,8 @@ func (cpu *CPU) runInstruction(offset uint16) {
 		ana(cpu, cpu.L)
 	case 0xa6: // ANA M
 		ana(cpu, cpu.MemRead(cpu.hlValue()))
+		cpu.Flags.Set(AC, false)
+		cpu.Flags.Set(CY, false)
 	case 0xa7: // ANA A
 		ana(cpu, cpu.A)
 
@@ -643,8 +630,8 @@ func (cpu *CPU) runInstruction(offset uint16) {
 		push(cpu, cpu.B, cpu.C)
 	case 0xc6: // ADI byte
 		adi(cpu, cpu.NextByte())
-	case 0xc7: // RST 0
-		rst(cpu, 0)
+	// case 0xc7: // RST 0
+	// 	rst(cpu, 0)
 
 	case 0xc8: // RZ
 		rz(cpu)
@@ -658,10 +645,10 @@ func (cpu *CPU) runInstruction(offset uint16) {
 		cz(cpu, cpu.NextWord())
 	case 0xcd: // CALL addr
 		call(cpu, cpu.NextWord())
-	case 0xce: // ACI byte
-		aci(cpu, cpu.NextByte())
-	case 0xcf: // RST 1
-		rst(cpu, 1)
+	// case 0xce: // ACI byte
+	// 	aci(cpu, cpu.NextByte())
+	// case 0xcf: // RST 1
+	// 	rst(cpu, 1)
 
 	case 0xd0: // RNC
 		rnc(cpu)
@@ -677,8 +664,8 @@ func (cpu *CPU) runInstruction(offset uint16) {
 		push(cpu, cpu.D, cpu.E)
 	case 0xd6: // SUI byte
 		sui(cpu, cpu.NextByte())
-	case 0xd7: // RST 2
-		rst(cpu, 2)
+	// case 0xd7: // RST 2
+	// 	rst(cpu, 2)
 
 	case 0xd8: // RC
 		rc(cpu)
@@ -688,82 +675,82 @@ func (cpu *CPU) runInstruction(offset uint16) {
 		jc(cpu, cpu.NextWord())
 	case 0xdb: // IN byte (hardware specific)
 		break
-	case 0xdc: // CC addr
-		cc(cpu, cpu.NextWord())
+	// case 0xdc: // CC addr
+	// 	cc(cpu, cpu.NextWord())
 	// case 0xdd: // -
 	// 	break
 	case 0xde: // SBI byte
 		sbi(cpu, cpu.NextByte())
-	case 0xdf: // RST 3
-		rst(cpu, 3)
+	// case 0xdf: // RST 3
+	// 	rst(cpu, 3)
 
-	case 0xe0: // RPO
-		rpo(cpu)
+	// case 0xe0: // RPO
+	// 	rpo(cpu)
 	case 0xe1: // POP H
 		pop(cpu, &cpu.H, &cpu.L)
-	case 0xe2: // JPO
-		jpo(cpu, cpu.NextWord())
+	// case 0xe2: // JPO
+	// 	jpo(cpu, cpu.NextWord())
 	case 0xe3: // XTHL
 		xthl(cpu)
-	case 0xe4: // CPO addr
-		cpo(cpu, cpu.NextWord())
+	// case 0xe4: // CPO addr
+	// 	cpo(cpu, cpu.NextWord())
 	case 0xe5: // PUSH H
 		push(cpu, cpu.H, cpu.L)
 	case 0xe6: // ANI byte
 		ani(cpu, cpu.NextByte())
-	case 0xe7: // RST 4
-		rst(cpu, 4)
+	// case 0xe7: // RST 4
+	// 	rst(cpu, 4)
 
-	case 0xe8: // RPE
-		rpe(cpu)
+	// case 0xe8: // RPE
+	// 	rpe(cpu)
 	case 0xe9: // PCHL
 		pchl(cpu)
-	case 0xea: // JPE addr
-		jpe(cpu, cpu.NextWord())
+	// case 0xea: // JPE addr
+	// 	jpe(cpu, cpu.NextWord())
 	case 0xeb: // XCHG
 		xchg(cpu)
-	case 0xec: // CPE addr
-		cpe(cpu, cpu.NextWord())
+	// case 0xec: // CPE addr
+	// 	cpe(cpu, cpu.NextWord())
 	// case 0xed: // -
 	// 	break
-	case 0xee: // XRI byte
-		xri(cpu, cpu.NextByte())
-	case 0xef: // RST 5
-		rst(cpu, 5)
+	// case 0xee: // XRI byte
+	// 	xri(cpu, cpu.NextByte())
+	// case 0xef: // RST 5
+	// 	rst(cpu, 5)
 
-	case 0xf0: // RP
-		rp(cpu)
+	// case 0xf0: // RP
+	// 	rp(cpu)
 	case 0xf1: // POP PSW
 		popPSW(cpu)
-	case 0xf2: // JP addr
-		jp(cpu, cpu.NextWord())
+	// case 0xf2: // JP addr
+	// 	jp(cpu, cpu.NextWord())
 	case 0xf3: // DI
 		cpu.IntEnable = false
-	case 0xf4: // CP addr
-		cp(cpu, cpu.NextWord())
+	// case 0xf4: // CP addr
+	// 	cp(cpu, cpu.NextWord())
 	case 0xf5: // PUSH PSW
 		pushPSW(cpu)
 	case 0xf6: // ORI byte
 		ori(cpu, cpu.NextByte())
-	case 0xf7: // RST 6
-		rst(cpu, 6)
+	// case 0xf7: // RST 6
+	// 	rst(cpu, 6)
 
-	case 0xf8: // RM
-		rm(cpu)
+	// case 0xf8: // RM
+	// 	rm(cpu)
 	case 0xf9: // SPHL
 		sphl(cpu)
 	case 0xfa: // JM addr
 		jm(cpu, cpu.NextWord())
 	case 0xfb: // EI
 		cpu.IntEnable = true
-	case 0xfc: // CM addr
-		cm(cpu, cpu.NextWord())
+	// case 0xfc: // CM addr
+	// 	cm(cpu, cpu.NextWord())
 	// case 0xfd: // -
 	// 	break
 	case 0xfe: // CPI byte
 		cpi(cpu, cpu.NextByte())
-	case 0xff: // RST 7
-		rst(cpu, 7)
+	// case 0xff: // RST 7
+	// 	rst(cpu, 7)
 	default:
 		unimplemented(cpu)
 	}
