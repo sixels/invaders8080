@@ -17,7 +17,7 @@ go get && go build
 
 this will create an `invaders8080` executable.
 
-## Usage
+## Running
 
 ```sh
 ./invaders8080 path/to/SpaceInvadersRom
