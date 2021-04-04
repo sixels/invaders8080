@@ -2,10 +2,12 @@
 
 An intel 8080 and Space Invaders emulator written in Go.
 
-<img
-    align="center"
-    src="res/demo.gif"
-    alt="Space Invaders Running on the emulator" />
+<p align="center">
+    <img
+        align="center"
+        src="res/demo.gif"
+        alt="Space Invaders Running on the emulator" />
+</p>
 
 ## Build
 
