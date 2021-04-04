@@ -158,34 +158,25 @@ func (game *Invaders) handleEvents() bool {
 				case sdl.SCANCODE_ESCAPE:
 					return false
 				case sdl.SCANCODE_C: // INSERT COIN
-					fmt.Print(".")
 					game.ports[1] |= 0x01
 
 				case sdl.SCANCODE_S: // P1 START
-					fmt.Print(",")
 					game.ports[1] |= 1 << 2
 				case sdl.SCANCODE_RETURN: // P2 START
-					fmt.Print("2,")
 					game.ports[1] |= 1 << 1
 
 				case sdl.SCANCODE_W: // P1 SHOOT
-					fmt.Print("^")
 					game.ports[1] |= 1 << 4
 				case sdl.SCANCODE_A: // P1 LEFT
-					fmt.Print("<")
 					game.ports[1] |= 1 << 5
 				case sdl.SCANCODE_D: // P1 RIGHT
-					fmt.Print(">")
 					game.ports[1] |= 1 << 6
 
 				case sdl.SCANCODE_UP: // P2 SHOOT
-					fmt.Print("2^")
 					game.ports[2] |= 1 << 4
 				case sdl.SCANCODE_LEFT: // P2 LEFT
-					fmt.Print("2<")
 					game.ports[2] |= 1 << 5
 				case sdl.SCANCODE_RIGHT: // P2 RIGHT
-					fmt.Print("2>")
 					game.ports[2] |= 1 << 6
 				}
 			}
@@ -224,7 +215,6 @@ func (game *Invaders) handleIn(port uint8) {
 	if port == 2 || port == 4 {
 		return
 	}
-	fmt.Printf("IN %d\n", port)
 
 	game.ports[port] = game.cpu.A
 }
@@ -233,7 +223,6 @@ func (game *Invaders) handleOut(port uint8) {
 	if port == 3 {
 		return
 	}
-	fmt.Printf("OUT %d\n", port)
 
 	game.cpu.A = game.ports[port]
 }
